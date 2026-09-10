@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mini Kiosk - PC & Phone</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f2f2f2;display:flex;height:100vh;overflow:hidden}
+
+/* SIDEBAR - Responsive */
+.sidebar{width:120px;background:#111;color:#fff;display:flex;flex-direction:column}
+.sidebar .logo{padding:15px;text-align:center;font-weight:bold;border-bottom:1px solid #333}
+.sidebar .cat{padding:18px 5px;text-align:center;border-bottom:1px solid #222;cursor:pointer;font-size:14px;transition:0.2s}
+.sidebar .cat.active{background:#FF6B6B;color:white}
+.sidebar .cat:hover{background:#222}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:15px;padding-bottom:80px}
+.grid{display:grid;gap:10px}
+.card{background:white;border-radius:16px;padding:15px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.card b{font-size:16px}
+.card .price{color:#FF6B6B;font-weight:bold}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:36px;height:36px;border-radius:50%;border:none;background:#111;color:white;font-size:18px;font-weight:bold}
+.qty button:active{transform:scale(0.9)}
+
+/* BOTTOM BAR */
+.bar{position:fixed;bottom:0;left:120px;right:0;background:#111;color:white;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;z-index:10}
+.bar button{background:#FF6B6B;border:none;color:white;padding:10px 20px;border-radius:25px;font-weight:bold;font-size:14px}
+
+/* MODAL */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;z-index:99;padding:15px}
+.modal-box{background:white;width:100%;max-width:380px;border-radius:20px;padding:25px;text-align:center}
+
+/* PHONE RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{width:90px}
+  .sidebar .cat{padding:14px 3px;font-size:12px}
+  .bar{left:90px;padding:12px}
+  .main{padding:10px;padding-bottom:80px}
+  .card{padding:12px}
+  .qty button{width:32px;height:32px}
+}
+/* PC BIG SCREEN */
+@media(min-width:1024px){
+  .sidebar{width:200px}
+  .sidebar .cat{padding:22px;font-size:16px}
+  .bar{left:200px}
+  .main{padding:30px;max-width:900px;margin:0 auto;width:100%}
+  .grid{grid-template-columns:1fr 1fr;gap:15px}
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">🍦 KIOSK</div>
+  <div class="cat active" onclick="setCat('Ice Creams',this)">🍦<br>Ice Creams</div>
+  <div class="cat" onclick="setCat('Drinks',this)">🥤<br>Drinks</div>
+  <div class="cat" onclick="setCat('Add-ons',this)">➕<br>Add-ons</div>
+</div>
+
+<div class="main">
+  <h2 id="catTitle" style="margin-bottom:15px">Ice Creams</h2>
+  <div class="grid" id="list"></div>
+</div>
+
+<div class="bar">
+  <span id="cartText">🛒 0 items • ₱0</span>
+  <button onclick="checkout()">PROCEED →</button>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal" id="payModal">
+  <div class="modal-box">
+    <h3>Choose Payment</h3><br>
+    <button onclick="doPay('Cash')" style="width:100%;padding:16px;margin:6px 0;border:1px solid #ddd;border-radius:12px;background:white">💵 CASH</button>
+    <button onclick="doPay('GCash')" style="width:100%;padding:16px;margin:6px 0;border:none;border-radius:12px;background:#007DFF;color:white">📱 GCash</button>
+    <button onclick="doPay('Bank')" style="width:100%;padding:16px;margin:6px 0;border:1px solid #ddd;border-radius:12px;background:white">🏦 Bank Transfer</button>
+    <br><button onclick="closePay()" style="margin-top:10px;border:none;background:none">Cancel</button>
+  </div>
+</div>
+
+<!-- CONFIRM -->
+<div class="modal" id="confirmModal">
+  <div class="modal-box">
+    <h1>✅ Order Confirmed!</h1>
+    <h2 id="orderNum" style="font-size:42px;color:#FF6B6B;margin:10px 0"></h2>
+    <div id="orderSummary" style="text-align:left;background:#f8f8f8;padding:15px;border-radius:12px;margin:15px 0"></div>
+    <p>Please return phone to staff</p><br>
+    <button onclick="location.reload()" style="width:100%;padding:14px;background:#111;color:white;border:none;border-radius:12px">New Order</button>
+  </div>
+</div>
+
+<script>
+const products=[
+{id:1,name:'Vanilla Scoop',price:50,cat:'Ice Creams',emoji:'🍦'},
+{id:2,name:'Chocolate Scoop',price:55,cat:'Ice Creams',emoji:'🍫'},
+{id:3,name:'Strawberry Scoop',price:55,cat:'Ice Creams',emoji:'🍓'},
+{id:4,name:'Coke 350ml',price:30,cat:'Drinks',emoji:'🥤'},
+{id:5,name:'Water',price:20,cat:'Drinks',emoji:'💧'},
+{id:6,name:'Extra Pearl',price:10,cat:'Add-ons',emoji:'⚪'},
+{id:7,name:'Choco Syrup',price:15,cat:'Add-ons',emoji:'🍯'},
+];
+let current='Ice Creams'; let cart={};
+function setCat(c,el){
+  current=c; document.getElementById('catTitle').innerText=c;
+  document.querySelectorAll('.cat').forEach(d=>d.classList.remove('active')); el.classList.add('active'); render();
+}
+function render(){
+  let html=''; products.filter(p=>p.cat==current).forEach(p=>{
+    let q=cart[p.id]||0;
+    html+=`<div class="card"><div>${p.emoji} <b>${p.name}</b><br><span class="price">₱${p.price}</span></div><div class="qty">${q>0?`<button onclick="chg(${p.id},-1)">−</button><b>${q}</b>`:''}<button onclick="chg(${p.id},1)">+</button></div></div>`;
+  });
+  document.getElementById('list').innerHTML=html;
+  let tot=0,cnt=0; for(let id in cart){ let pr=products.find(x=>x.id==id); tot+=pr.price*cart[id]; cnt+=cart[id]; }
+  document.getElementById('cartText').innerText=`🛒 ${cnt} items • ₱${tot}`;
+}
+function chg(id,d){ cart[id]=(cart[id]||0)+d; if(cart[id]<=0) delete cart[id]; render(); }
+function checkout(){ if(Object.keys(cart).length==0){alert('Add item first!');return} document.getElementById('payModal').style.display='flex'; }
+function closePay(){ document.getElementById('payModal').style.display='none'; }
+function doPay(method){
+  let tot=0; for(let id in cart) tot+=products.find(p=>p.id==id).price*cart[id];
+  let num='A-'+Math.floor(Math.random()*900+100);
+  let orders=JSON.parse(localStorage.getItem('kiosk_orders')||'[]');
+  orders.push({order_number:num,items:Object.entries(cart).map(([id,q])=>{let p=products.find(x=>x.id==id);return {...p,qty:q}}),total:tot,method,time:new Date().toLocaleTimeString()});
+  localStorage.setItem('kiosk_orders',JSON.stringify(orders));
+  document.getElementById('payModal').style.display='none';
+  document.getElementById('confirmModal').style.display='flex';
+  document.getElementById('orderNum').innerText=num;
+  let s=''; for(let id in cart){ let p=products.find(x=>x.id==id); s+=`${p.name} x${cart[id]} - ₱${p.price*cart[id]}<br>`; }
+  s+=`<hr style="margin:8px 0"><b>Total: ₱${tot}</b><br>Payment: ${method}`;
+  if(method!='Cash') s+=`<br><br><div style="background:white;padding:8px;border-radius:8px;border:1px dashed #007DFF">GCash: 0912-345-6789<br>Show proof to staff</div>`;
+  document.getElementById('orderSummary').innerHTML=s;
+}
+render();
+</script>
+</body>
+</html>
