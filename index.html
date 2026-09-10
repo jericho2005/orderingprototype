@@ -57,7 +57,9 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f2f2f2;display:flex;hei
 <body>
 
 <div class="sidebar">
-  <div class="logo">🍦 KIOSK</div>
+  <div class="logo" style="padding:10px;text-align:center;border-bottom:1px solid #333">
+  <img src="images/logo.png" style="width:50px;height:50px;border-radius:50%;background:white;object-fit:cover"><br><b style="font-size:12px">YUSHI BITES</b>
+</div>
   <div class="cat active" onclick="setCat('Ice Creams',this)">🍦<br>Ice Creams</div>
   <div class="cat" onclick="setCat('Drinks',this)">🥤<br>Drinks</div>
   <div class="cat" onclick="setCat('Add-ons',this)">➕<br>Add-ons</div>
@@ -97,13 +99,13 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f2f2f2;display:flex;hei
 
 <script>
 const products=[
-{id:1,name:'Vanilla Scoop',price:50,cat:'Ice Creams',emoji:'🍦'},
-{id:2,name:'Chocolate Scoop',price:55,cat:'Ice Creams',emoji:'🍫'},
-{id:3,name:'Strawberry Scoop',price:55,cat:'Ice Creams',emoji:'🍓'},
-{id:4,name:'Coke 350ml',price:30,cat:'Drinks',emoji:'🥤'},
-{id:5,name:'Water',price:20,cat:'Drinks',emoji:'💧'},
-{id:6,name:'Extra Pearl',price:10,cat:'Add-ons',emoji:'⚪'},
-{id:7,name:'Choco Syrup',price:15,cat:'Add-ons',emoji:'🍯'},
+{id:1,name:'Vanilla Scoop',price:50,cat:'Ice Creams',img:'images/vanilla.jpg'},
+{id:2,name:'Chocolate Scoop',price:55,cat:'Ice Creams',img:'images/chocolate.jpg'},
+{id:3,name:'Strawberry Scoop',price:55,cat:'Ice Creams',img:'images/strawberry.jpg'},
+{id:4,name:'Coke 350ml',price:30,cat:'Drinks',img:'images/coke.jpg'},
+{id:5,name:'Water',price:20,cat:'Drinks',img:'images/water.jpg'},
+{id:6,name:'Sprinkles',price:10,cat:'Add-ons',img:'images/sprinkles.jpg'},
+{id:7,name:'Choco Syrup',price:15,cat:'Add-ons',img:'images/chocsyr.jpg'},
 ];
 let current='Ice Creams'; let cart={};
 function setCat(c,el){
@@ -113,7 +115,13 @@ function setCat(c,el){
 function render(){
   let html=''; products.filter(p=>p.cat==current).forEach(p=>{
     let q=cart[p.id]||0;
-    html+=`<div class="card"><div>${p.emoji} <b>${p.name}</b><br><span class="price">₱${p.price}</span></div><div class="qty">${q>0?`<button onclick="chg(${p.id},-1)">−</button><b>${q}</b>`:''}<button onclick="chg(${p.id},1)">+</button></div></div>`;
+    html+=`<div class="card">
+  <div style="display:flex;gap:10px;align-items:center">
+    <img src="${p.img}" style="width:60px;height:60px;border-radius:12px;object-fit:cover;background:#eee">
+    <div><b>${p.name}</b><br><span class="price">₱${p.price}</span></div>
+  </div>
+  <div class="qty">${q>0?`<button onclick="chg(${p.id},-1)">−</button><b>${q}</b>`:''}<button onclick="chg(${p.id},1)">+</button></div>
+</div>`;
   });
   document.getElementById('list').innerHTML=html;
   let tot=0,cnt=0; for(let id in cart){ let pr=products.find(x=>x.id==id); tot+=pr.price*cart[id]; cnt+=cart[id]; }
