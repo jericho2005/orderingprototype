@@ -1,0 +1,178 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Arial;
+  background: #f2f2f2;
+  padding: 15px;
+}
+
+.header {
+  background: #111;
+  color: white;
+  padding: 15px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.order {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.order b {
+  color: #FF6B6B;
+}
+
+.btn {
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-done {
+  background: #111;
+  color: white;
+}
+
+.btn-clear {
+  background: #ff4444;
+  color: white;
+  padding: 12px;
+  width: 100%;
+  margin-top: 20px;
+  border-radius: 12px;
+  font-weight: bold;
+}
+
+/* === ONLY NEW PART FOR STOCK FEATURE === */
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.tab {
+  padding: 10px 16px;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: #111;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.add-form {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+.add-form input,
+.add-form select {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.prod-item {
+  background: white;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.prod-item img {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+#preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  display: none;
+  margin-top: 10px;
+  object-fit: cover;
+}
+
+.stock-row {
+  background: white;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stock-row.low {
+  border-left: 4px solid #ff4444;
+}
+
+.stock-row.out {
+  opacity: 0.6;
+  border-left: 4px solid #111;
+}
+
+.stock-controls {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.stock-input {
+  width: 60px;
+  padding: 6px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  text-align: center;
+}
+
+@media (min-width: 1024px) {
+  body {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px;
+  }
+
+  .order {
+    padding: 20px;
+  }
+}

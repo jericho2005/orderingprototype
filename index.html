@@ -3,66 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>YUSHI BITES</title>
+<title>YUSHE BITES</title>
 <link rel="icon" type="image/png" href="logo/logo.png">
-</head>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#f2f2f2;display:flex;height:100vh;overflow:hidden}
-
-/* SIDEBAR - Responsive */
-.sidebar{width:120px;background:#111;color:#fff;display:flex;flex-direction:column}
-.sidebar .logo{padding:15px;text-align:center;font-weight:bold;border-bottom:1px solid #333}
-.sidebar .cat{padding:18px 5px;text-align:center;border-bottom:1px solid #222;cursor:pointer;font-size:14px;transition:0.2s}
-.sidebar .cat.active{background:#FF6B6B;color:white}
-.sidebar .cat:hover{background:#222}
-
-/* MAIN */
-.main{flex:1;overflow-y:auto;padding:15px;padding-bottom:80px}
-.grid{display:grid;gap:10px}
-.card{background:white;border-radius:16px;padding:15px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
-.card b{font-size:16px}
-.card .price{color:#FF6B6B;font-weight:bold}
-.qty{display:flex;align-items:center;gap:8px}
-.qty button{width:36px;height:36px;border-radius:50%;border:none;background:#111;color:white;font-size:18px;font-weight:bold}
-.qty button:active{transform:scale(0.9)}
-
-/* BOTTOM BAR */
-.bar{position:fixed;bottom:0;left:120px;right:0;background:#111;color:white;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;z-index:10}
-.bar button{background:#FF6B6B;border:none;color:white;padding:10px 20px;border-radius:25px;font-weight:bold;font-size:14px}
-
-/* MODAL */
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;z-index:99;padding:15px}
-.modal-box{background:white;width:100%;max-width:380px;border-radius:20px;padding:25px;text-align:center}
-
-/* PHONE RESPONSIVE */
-@media(max-width:768px){
-  .sidebar{width:90px}
-  .sidebar .cat{padding:14px 3px;font-size:12px}
-  .bar{left:90px;padding:12px}
-  .main{padding:10px;padding-bottom:80px}
-  .card{padding:12px}
-  .qty button{width:32px;height:32px}
-}
-/* PC BIG SCREEN */
-@media(min-width:1024px){
-  .sidebar{width:200px}
-  .sidebar .cat{padding:22px;font-size:16px}
-  .bar{left:200px}
-  .main{padding:30px;max-width:900px;margin:0 auto;width:100%}
-  .grid{grid-template-columns:1fr 1fr;gap:15px}
-}
-</style>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
 </head>
 <body>
 
-<div class="sidebar">
+<div class="sidebar" id="sidebar">
   <div class="logo" style="padding:10px;text-align:center;border-bottom:1px solid #333">
-  <img src="images/logo.png" style="width:50px;height:50px;border-radius:50%;background:white;object-fit:cover"><br><b style="font-size:12px">YUSHI BITES</b>
-</div>
-  <div class="cat active" onclick="setCat('Ice Creams',this)">🍦<br>Ice Creams</div>
-  <div class="cat" onclick="setCat('Drinks',this)">🥤<br>Drinks</div>
-  <div class="cat" onclick="setCat('Add-ons',this)">➕<br>Add-ons</div>
+    <img src="images/logo.png" style="width:50px;height:50px;border-radius:50%;background:white;object-fit:cover"><br><b style="font-size:12px">YUSHE BITES</b>
+  </div>
+  <div id="catSidebar"></div>
 </div>
 
 <div class="main">
@@ -98,53 +50,67 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f2f2f2;display:flex;hei
 </div>
 
 <script>
-const products=[
-{id:1,name:'Vanilla Scoop',price:50,cat:'Ice Creams',img:'images/vanilla.jpg'},
-{id:2,name:'Chocolate Scoop',price:55,cat:'Ice Creams',img:'images/chocolate.jpg'},
-{id:3,name:'Strawberry Scoop',price:55,cat:'Ice Creams',img:'images/strawberry.jpg'},
-{id:4,name:'Coke 350ml',price:30,cat:'Drinks',img:'images/coke.jpg'},
-{id:5,name:'Water',price:20,cat:'Drinks',img:'images/water.jpg'},
-{id:6,name:'Sprinkles',price:10,cat:'Add-ons',img:'images/sprinkles.jpg'},
-{id:7,name:'Choco Syrup',price:15,cat:'Add-ons',img:'images/chocsyr.jpg'},
-];
-let current='Ice Creams'; let cart={};
-function setCat(c,el){
-  current=c; document.getElementById('catTitle').innerText=c;
-  document.querySelectorAll('.cat').forEach(d=>d.classList.remove('active')); el.classList.add('active'); render();
-}
-function render(){
-  let html=''; products.filter(p=>p.cat==current).forEach(p=>{
-    let q=cart[p.id]||0;
-    html+=`<div class="card">
-  <div style="display:flex;gap:10px;align-items:center">
-    <img src="${p.img}" style="width:60px;height:60px;border-radius:12px;object-fit:cover;background:#eee">
-    <div><b>${p.name}</b><br><span class="price">₱${p.price}</span></div>
-  </div>
-  <div class="qty">${q>0?`<button onclick="chg(${p.id},-1)">−</button><b>${q}</b>`:''}<button onclick="chg(${p.id},1)">+</button></div>
-</div>`;
-  });
-  document.getElementById('list').innerHTML=html;
-  let tot=0,cnt=0; for(let id in cart){ let pr=products.find(x=>x.id==id); tot+=pr.price*cart[id]; cnt+=cart[id]; }
-  document.getElementById('cartText').innerText=`🛒 ${cnt} items • ₱${tot}`;
-}
-function chg(id,d){ cart[id]=(cart[id]||0)+d; if(cart[id]<=0) delete cart[id]; render(); }
-function checkout(){ if(Object.keys(cart).length==0){alert('Add item first!');return} document.getElementById('payModal').style.display='flex'; }
-function closePay(){ document.getElementById('payModal').style.display='none'; }
-function doPay(method){
-  let tot=0; for(let id in cart) tot+=products.find(p=>p.id==id).price*cart[id];
-  let num='A-'+Math.floor(Math.random()*900+100);
-  let orders=JSON.parse(localStorage.getItem('kiosk_orders')||'[]');
-  orders.push({order_number:num,items:Object.entries(cart).map(([id,q])=>{let p=products.find(x=>x.id==id);return {...p,qty:q}}),total:tot,method,time:new Date().toLocaleTimeString()});
-  localStorage.setItem('kiosk_orders',JSON.stringify(orders));
-  document.getElementById('payModal').style.display='none';
-  document.getElementById('confirmModal').style.display='flex';
-  document.getElementById('orderNum').innerText=num;
-  let s=''; for(let id in cart){ let p=products.find(x=>x.id==id); s+=`${p.name} x${cart[id]} - ₱${p.price*cart[id]}<br>`; }
-  s+=`<hr style="margin:8px 0"><b>Total: ₱${tot}</b><br>Payment: ${method}`;
-  if(method!='Cash') s+=`<br><br><div style="background:white;padding:8px;border-radius:8px;border:1px dashed #007DFF">GCash: 0912-345-6789<br>Show proof to staff</div>`;
-  document.getElementById('orderSummary').innerHTML=s;
-}
-render();
+ let categories = JSON.parse(localStorage.getItem('yushe_cats')) || ["Ice Creams","Drinks","Add-ons"];
+ let products = JSON.parse(localStorage.getItem('yushe_products')) || JSON.parse(localStorage.getItem('kiosk_products')) || [
+  {id:1,name:'Vanilla Scoop',price:50,cat:'Ice Creams',img:'images/vanilla.jpg',stock:50,available:true},
+  {id:2,name:'Chocolate Scoop',price:55,cat:'Ice Creams',img:'images/chocolate.jpg',stock:50,available:true},
+  {id:3,name:'Strawberry Scoop',price:55,cat:'Ice Creams',img:'images/strawberry.jpg',stock:50,available:true},
+  {id:4,name:'Coke 350ml',price:30,cat:'Drinks',img:'images/coke.jpg',stock:50,available:true},
+  {id:5,name:'Water',price:20,cat:'Drinks',img:'images/water.jpg',stock:50,available:true},
+  {id:6,name:'Sprinkles',price:10,cat:'Add-ons',img:'images/sprinkles.jpg',stock:50,available:true},
+ ];
+
+ let current = categories[0];
+ let cart={};
+
+ function renderCats(){
+   document.getElementById('catSidebar').innerHTML = categories.map((c,i)=>
+     `<div class="cat ${c==current?'active':''}" onclick="setCat('${c}',this)"> ${c} </div>`
+   ).join('');
+   document.getElementById('catTitle').innerText = current;
+ }
+ function setCat(c,el){
+   current=c; document.getElementById('catTitle').innerText=c;
+   document.querySelectorAll('.cat').forEach(d=>d.classList.remove('active'));
+   el.classList.add('active'); render();
+ }
+ function render(){
+   let html='';
+   products.filter(p=>p.cat==current).forEach(p=>{
+     let q=cart[p.id]||0;
+     let isNotAvailable = p.available === false; // <-- THIS IS THE FIX
+     let isOutOfStock = p.stock <= 0;
+     let isDisabled = isNotAvailable || isOutOfStock;
+
+     html+=`<div class="card" style="${isDisabled?'opacity:0.5':''}">
+       <div style="display:flex;gap:10px;align-items:center">
+         <img src="${p.img}" style="width:60px;height:60px;border-radius:12px;object-fit:cover;background:#eee">
+         <div><b>${p.name}</b><br><span class="price">₱${p.price}</span>
+         ${isNotAvailable?'<br><small style="color:red;font-weight:bold">⛔ NOT AVAILABLE</small>': isOutOfStock?'<br><small style="color:red">SOLD OUT</small>':''}
+         </div>
+       </div>
+       <div class="qty">${!isDisabled?`${q>0?`<button onclick="chg(${p.id},-1)">−</button><b>${q}</b>`:''}<button onclick="chg(${p.id},1)">+</button>`:`<small>—</small>`}</div>
+     </div>`;
+   });
+   document.getElementById('list').innerHTML=html || '<p style="padding:20px;color:#999">No products in this category</p>';
+   let tot=0,cnt=0; for(let id in cart){ let pr=products.find(x=>x.id==id); if(pr){ tot+=pr.price*cart[id]; cnt+=cart[id]; } }
+   document.getElementById('cartText').innerText=`🛒 ${cnt} items • ₱${tot}`;
+ }
+ function chg(id,d){ cart[id]=(cart[id]||0)+d; if(cart[id]<=0) delete cart[id]; render(); }
+ function checkout(){ if(Object.keys(cart).length==0){alert('Add item first!');return} document.getElementById('payModal').style.display='flex'; }
+ function closePay(){ document.getElementById('payModal').style.display='none'; }
+ function doPay(method){
+   let tot=0; for(let id in cart) tot+=products.find(p=>p.id==id).price*cart[id];
+   let num='A-'+Math.floor(Math.random()*900+100);
+   let orders=JSON.parse(localStorage.getItem('kiosk_orders')||'[]');
+   orders.push({order_number:num,items:Object.entries(cart).map(([id,q])=>{let p=products.find(x=>x.id==id);return {...p,qty:q}}),total:tot,method,time:new Date().toLocaleTimeString()});
+   localStorage.setItem('kiosk_orders',JSON.stringify(orders));
+   document.getElementById('payModal').style.display='none'; document.getElementById('confirmModal').style.display='flex';
+   document.getElementById('orderNum').innerText=num;
+   let s=''; for(let id in cart){ let p=products.find(x=>x.id==id); s+=`${p.name} x${cart[id]} - ₱${p.price*cart[id]}<br>`; }
+   s+=`<hr style="margin:8px 0"><b>Total: ₱${tot}</b><br>Payment: ${method}`; document.getElementById('orderSummary').innerHTML=s;
+ }
+ renderCats(); render();
 </script>
 </body>
 </html>

@@ -1,0 +1,45 @@
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f2f2f2;display:flex;height:100vh;overflow:hidden}
+
+/* SIDEBAR - Responsive */
+.sidebar{width:120px;background:#111;color:#fff;display:flex;flex-direction:column}
+.sidebar .logo{padding:15px;text-align:center;font-weight:bold;border-bottom:1px solid #333}
+.sidebar .cat{padding:18px 5px;text-align:center;border-bottom:1px solid #222;cursor:pointer;font-size:14px;transition:0.2s}
+.sidebar .cat.active{background:#FF6B6B;color:white}
+.sidebar .cat:hover{background:#222}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:15px;padding-bottom:80px}
+.grid{display:grid;gap:10px}
+.card{background:white;border-radius:16px;padding:15px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.card b{font-size:16px}
+.card .price{color:#FF6B6B;font-weight:bold}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:36px;height:36px;border-radius:50%;border:none;background:#111;color:white;font-size:18px;font-weight:bold}
+.qty button:active{transform:scale(0.9)}
+
+/* BOTTOM BAR */
+.bar{position:fixed;bottom:0;left:120px;right:0;background:#111;color:white;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;z-index:10}
+.bar button{background:#FF6B6B;border:none;color:white;padding:10px 20px;border-radius:25px;font-weight:bold;font-size:14px}
+
+/* MODAL */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;z-index:99;padding:15px}
+.modal-box{background:white;width:100%;max-width:380px;border-radius:20px;padding:25px;text-align:center}
+
+/* PHONE RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{width:90px}
+  .sidebar .cat{padding:14px 3px;font-size:12px}
+  .bar{left:90px;padding:12px}
+  .main{padding:10px;padding-bottom:80px}
+  .card{padding:12px}
+  .qty button{width:32px;height:32px}
+}
+/* PC BIG SCREEN */
+@media(min-width:1024px){
+  .sidebar{width:200px}
+  .sidebar .cat{padding:22px;font-size:16px}
+  .bar{left:200px}
+  .main{padding:30px;max-width:900px;margin:0 auto;width:100%}
+  .grid{grid-template-columns:1fr 1fr;gap:15px}
+}

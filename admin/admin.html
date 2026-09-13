@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="admin.css">
+  <title>Admin - Yushe Bites</title>
+</head>
+<body>
+  <div class="header">
+    <h2>🧋 Yushe Bites - Admin</h2>
+    <div>
+      <button class="btn" style="background:#333;color:white" onclick="location.reload()">🔄 Refresh</button>
+      <button class="btn" style="background:#FF6B6B;color:white" onclick="window.location.href='../'">← Kiosk</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="orders" onclick="showTab('orders')">🧾 Live Orders</button>
+    <button class="tab" data-tab="products" onclick="showTab('products')">➕ Add Product</button>
+    <button class="tab" data-tab="stock" onclick="showTab('stock')">📦 Stock / Inventory</button>
+  </div>
+
+  <div id="tab-orders" class="tab-content active">
+    <div style="background:white;padding:12px;border-radius:10px;margin-bottom:15px;color:#111">
+      <small>Auto-refresh every 2 seconds</small><br>
+      <b id="totalOrders">0 orders today</b>
+    </div>
+    <div id="ordersList"></div>
+    <button class="btn-clear" onclick="clearOrders()">🗑️ Clear All Orders</button>
+  </div>
+
+  <div id="tab-products" class="tab-content">
+    
+    <div style="background:white;padding:15px;border-radius:12px;margin-bottom:15px;color:#111">
+      <h3>🏷️ Manage Categories</h3>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <input id="newCat" placeholder="New category ex: Promo" style="flex:1">
+        <button class="btn" style="background:#2ecc71" onclick="addCat()">+ Add</button>
+      </div>
+      <div id="catList" style="margin-top:12px;display:flex;flex-wrap:wrap;gap:6px"></div>
+    </div>
+
+    <div class="add-form">
+      <h3>➕ Add / Edit Product</h3>
+      <input type="hidden" id="editId">
+      <label>Product Name:</label>
+      <input id="pName" placeholder="Ex: Okinawa Milk Tea">
+      <label>Price (₱):</label>
+      <input id="pPrice" type="number" placeholder="Ex: 89">
+      <label>Category:</label>
+      <select id="pCat"></select>
+      <label>Initial Stock:</label>
+      <input id="pStock" type="number" placeholder="Ex: 50">
+      <label>Photo:</label>
+      <input id="pImg" type="file" accept="image/*">
+      <img id="preview">
+      <br>
+      <button class="btn" style="background:#2ecc71;width:100%;margin-top:10px" onclick="saveProduct()">💾 SAVE</button>
+      <button class="btn" style="background:#333;color:white;width:100%;margin-top:8px" onclick="clearForm()">Clear</button>
+    </div>
+
+    <div style="background:white;padding:12px;border-radius:10px;color:#111;margin-top:15px">
+      <h3>📦 Current Yushe Products</h3>
+      <div id="productList"></div>
+    </div>
+  </div>
+
+  <div id="tab-stock" class="tab-content">
+    <div style="background:white;padding:15px;border-radius:12px;color:#111">
+      <h3>📦 Inventory</h3>
+      <small>Set stock to 0 to auto SOLD OUT on kiosk.</small>
+      <div id="stockList" style="margin-top:15px"></div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
